@@ -62,7 +62,7 @@ class SpaceGame(GameApp):
 
 
 
-        # self.bomb_power = BOMB_FULL_POWER
+
         self.bomb_wait = 0
         self.bomb_power = StatusWithText(self, 700, 20, 'Power: %d%%', 100)
         self.bomb_power.value = BOMB_FULL_POWER
