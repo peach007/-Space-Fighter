@@ -61,6 +61,7 @@ class SpaceGame(GameApp):
         self.score = StatusWithText(self, 100, 20, 'Score: %d', 0)
 
 
+
         # self.bomb_power = BOMB_FULL_POWER
         self.bomb_wait = 0
         self.bomb_power = StatusWithText(self, 700, 20, 'Power: %d%%', 100)
@@ -107,26 +108,30 @@ class SpaceGame(GameApp):
         return len(self.bullets)
 
     def bomb(self):
-        #self.bomb_power.value
         if self.bomb_power.value == BOMB_FULL_POWER:
             self.bomb_power.value = 0
+            self.circle_drawing()
+            self.delete_circle()
+            self.enemy_destroy()
 
-            self.bomb_canvas_id = self.canvas.create_oval(
-                self.ship.x - BOMB_RADIUS,
-                self.ship.y - BOMB_RADIUS,
-                self.ship.x + BOMB_RADIUS,
-                self.ship.y + BOMB_RADIUS
-            )
 
-            self.after(200, lambda: self.canvas.delete(self.bomb_canvas_id))
+    def circle_drawing(self):
+        self.bomb_canvas_id = self.canvas.create_oval(
+            self.ship.x - BOMB_RADIUS,
+            self.ship.y - BOMB_RADIUS,
+            self.ship.x + BOMB_RADIUS,
+            self.ship.y + BOMB_RADIUS
+        )
 
-            for e in self.enemies:
-                if self.ship.distance_to(e) <= BOMB_RADIUS:
-                    e.to_be_deleted = True
+    def delete_circle(self):
+        self.after(200, lambda: self.canvas.delete(self.bomb_canvas_id))
 
-            # self.update_bomb_power_text()
+    def enemy_destroy(self):
+        for e in self.enemies:
+            if self.ship.distance_to(e) <= BOMB_RADIUS:
+                e.to_be_deleted = True
 
-            self.bomb_wait += 1
+
 
     # def update_bomb_power_text(self):
     #     self.bomb_power_text.set_text('Power: %d%%' % self.bomb_power)
@@ -146,7 +151,7 @@ class SpaceGame(GameApp):
         if (self.bomb_wait >= BOMB_WAIT) and (self.bomb_power.value != BOMB_FULL_POWER):
             self.bomb_power.value += 1
             self.bomb_wait = 0
-            # self.update_bomb_power_text()
+
 
     def pre_update(self):
         if random() < 0.1:
